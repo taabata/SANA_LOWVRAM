@@ -13,7 +13,16 @@ git clone https://github.com/taabata/SANA_LOWVRAM.git
 
 ```
 
-Download SANA Diffusers models from https://huggingface.co/collections/Efficient-Large-Model/sana-673efba2a57ed99843f11f9e and place them in ComfyUI/models/diffusers directory
+Download SANA Diffusers models from https://huggingface.co/collections/Efficient-Large-Model/sana-673efba2a57ed99843f11f9e and place them in ComfyUI/models/diffusers directory.
+
+
+
+
+**Note**: you need to have diffusers installed for this to work. If you dont have diffusers:
+
+```
+pip install diffusers
+```
 
 
 
