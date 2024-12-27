@@ -1,0 +1,14 @@
+[project]
+name = "sana_lowvram"
+description = "ComfyUI Diffusers wrapper nodes to run SANA models on low vram devices. Works on 2GB VRAM 12GB RAM laptop."
+version = "1.0.0"
+license = {file = "LICENSE"}
+
+[project.urls]
+Repository = "https://github.com/taabata/SANA_LOWVRAM"
+#  Used by Comfy Registry https://comfyregistry.org
+
+[tool.comfy]
+PublisherId = ""
+DisplayName = "SANA_LOWVRAM"
+Icon = ""
