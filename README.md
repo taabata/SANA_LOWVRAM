@@ -1,5 +1,7 @@
 # SANA_LOWVRAM
-ComfyUI Diffusers wrapper nodes to run SANA models on low vram devices
+ComfyUI Diffusers wrapper nodes to run SANA models on low vram devices. Works on 2GB VRAM 12GB RAM laptop.
+<img src=https://github.com/taabata/SANA_LOWVRAM/blob/main/sana.png>
+
 
 
 # INSTALLATION
