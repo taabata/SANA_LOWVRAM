@@ -2,7 +2,7 @@
 
 from flask import Flask, request
 from PIL import Image
-import requests, subprocess, json, os, datetime
+import subprocess, json, os
 import torch
 
 from pipes.sana_img2img import SanaPipelineImg2Img
@@ -71,13 +71,15 @@ def getEmbeds():
 def diffuse():
     global embeds,params, output_image, flag
     print("diffusing......")
+    device = request.json["device"]
     if request.json["img2img"] == "enable":
         pipe = SanaPipelineImg2ImgPAG.from_pretrained(
             request.json["model"],
-            torch_dtype = torch.float16,
+            torch_dtype = torch.float16 if device=="cuda" else torch.float32,
             text_encoder=None
         )
-        pipe.enable_model_cpu_offload()
+        if device=="cuda":
+            pipe.enable_model_cpu_offload()
         image = pipe(
             prompt_embeds = torch.Tensor(np.array(json.loads(request.json["embeds"]["prompt_embeds"]))).half().to('cuda'),
             prompt_attention_mask= torch.Tensor(np.array(json.loads(request.json["embeds"]["prompt_attention_mask"]))).half().to('cuda'),
@@ -88,16 +90,17 @@ def diffuse():
             guidance_scale=float(request.json["cfg"]),
             pag_scale=float(request.json["pag_scale"]),
             num_inference_steps=int(request.json["steps"]),
-            image=json.loads(request.json["image"]),
+            image=Image.fromarray(np.array(json.loads(request.json["image"]),dtype="uint8")),
             strength=float(request.json["strength"])
         )[0]
     else:
         pipe = SanaPAGPipeline.from_pretrained(
             request.json["model"],
-            torch_dtype = torch.float16,
+            torch_dtype = torch.float16 if device=="cuda" else torch.float32,
             text_encoder=None
         )
-        pipe.enable_model_cpu_offload()
+        if device=="cuda":
+            pipe.enable_model_cpu_offload()
         image = pipe(
             prompt_embeds = torch.Tensor(np.array(json.loads(request.json["embeds"]["prompt_embeds"]))).half().to('cuda'),
             prompt_attention_mask= torch.Tensor(np.array(json.loads(request.json["embeds"]["prompt_attention_mask"]))).half().to('cuda'),

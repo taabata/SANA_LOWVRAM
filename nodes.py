@@ -4,6 +4,7 @@ import folder_paths
 import os
 import torch
 import subprocess, requests, time
+from PIL import Image
 
 
 
@@ -47,6 +48,7 @@ class SANADiffuse:
                         "img2img":(["disable","enable"],),
                         "embeds":("class",),
                         "model_path": ([f'diffusers/{i}' for i in os.listdir(folder_paths.get_folder_paths("diffusers")[0]) if os.path.isdir(folder_paths.get_folder_paths("diffusers")[0]+f"/{i}")],),
+                        "device":(["cuda","cpu"],),
                     },
                 "optional":
                     {
@@ -65,15 +67,16 @@ class SANADiffuse:
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "sana"
     
-    def sana(self, seed,steps,width,height,cfg,pag_scale,img2img,embeds,model_path, strength = None, image=None):
+    def sana(self, seed,steps,width,height,cfg,pag_scale,img2img,embeds,model_path,device, strength = None, image=None):
         subprocess.Popen(["python3","app.py"],cwd=os.path.join(os.path.dirname(os.path.realpath(__file__)),"SANA"))
         flag = True
         time.sleep(5)
         if img2img == "enable":
             image = image[0].numpy()
-            image = image*255.0
-            image = json.dumps(np.array(image).tolist())
+            image = image*255.0 
+            image = json.dumps(image.tolist())
         data = {
+            "device":device,
             "steps":steps,
             "width":width,
             "height":height,
