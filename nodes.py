@@ -9,6 +9,12 @@ from PIL import Image
 
 
 class SANADiffuse:
+    models = ["Efficient-Large-Model/Sana_600M_512px_diffusers",
+            "Efficient-Large-Model/Sana_600M_1024px_diffusers",
+            "Efficient-Large-Model/Sana_1600M_512px_diffusers",
+            "Efficient-Large-Model/Sana_1600M_1024px_diffusers" 
+            ]
+        
     @classmethod
     def INPUT_TYPES(s):
         return {"required":
@@ -47,7 +53,7 @@ class SANADiffuse:
                         }),
                         "img2img":(["disable","enable"],),
                         "embeds":("class",),
-                        "model_path": ([f'diffusers/{i}' for i in os.listdir(folder_paths.get_folder_paths("diffusers")[0]) if os.path.isdir(folder_paths.get_folder_paths("diffusers")[0]+f"/{i}")],),
+                        "model_path": ([f'diffusers/{i}' for i in os.listdir(folder_paths.get_folder_paths("diffusers")[0]) if os.path.isdir(folder_paths.get_folder_paths("diffusers")[0]+f"/{i}")]+SANADiffuse.models,),
                         "device":(["cuda","cpu"],),
                     },
                 "optional":
@@ -87,7 +93,7 @@ class SANADiffuse:
             "img2img":img2img,
             "image":image,
             "strength":strength,
-            "model":os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))+f"/models/{model_path}"
+            "model":os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))+f"/models/{model_path}" if model_path not in SANADiffuse.models else model_path
         }
         req = requests.post("http://127.0.0.1:5000/diffuse",json=data)
         while flag:
@@ -108,13 +114,19 @@ class SANADiffuse:
 
 
 class SANATextEncode:
+    models = ["Efficient-Large-Model/Sana_600M_512px_diffusers",
+              "Efficient-Large-Model/Sana_600M_1024px_diffusers",
+              "Efficient-Large-Model/Sana_1600M_512px_diffusers",
+              "Efficient-Large-Model/Sana_1600M_1024px_diffusers" 
+              ]
+
     @classmethod
     def INPUT_TYPES(s):
         return {"required":
                     {	
                         "prompt": ("STRING", {"default": '', "multiline": True}),
                         "negative_prompt": ("STRING", {"default": '', "multiline": True}),
-                        "model_path": ([f'diffusers/{i}' for i in os.listdir(folder_paths.get_folder_paths("diffusers")[0]) if os.path.isdir(folder_paths.get_folder_paths("diffusers")[0]+f"/{i}")],),
+                        "model_path": ([f'diffusers/{i}' for i in os.listdir(folder_paths.get_folder_paths("diffusers")[0]) if os.path.isdir(folder_paths.get_folder_paths("diffusers")[0]+f"/{i}")]+SANATextEncode.models,),
                     }
                 }
 
@@ -129,7 +141,7 @@ class SANATextEncode:
         data = {
             "prompt":prompt,
             "negative_prompt":negative_prompt,
-            "model":os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))+f"/models/{model_path}"
+            "model":os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))+f"/models/{model_path}" if model_path not in SANATextEncode.models else model_path
         }
         requests.post("http://127.0.0.1:5000/encode",json=data)
         flag = True
